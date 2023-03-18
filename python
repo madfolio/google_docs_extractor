@@ -14,4 +14,19 @@ service = build('docs', 'v1', credentials=creds)
 document_id = '1EwPGnwSdTj1O5IWKapqWfZ4kH228EbUptEpAQ8NC3ow'
 
 
-document = service.documents().get(documentId=document_id).execute()
+try:
+    document = service.documents().get(documentId=document_id).execute()
+    paragraphs = document.get('body').get('content')
+    # Extract text content from paragraphs
+    text_list = []
+    for paragraph in paragraphs:
+        elements = paragraph.get('paragraph', {}).get('elements', [])
+        for elem in elements:
+            text_run = elem.get('textRun', {})
+            if 'content' in text_run:
+                text_list.append(text_run['content'])
+    # Join text items into a single string
+    text = ''.join(text_list)
+    print(text)
+except HttpError as error:
+    print(f"An error occurred: {error}")
