@@ -1,0 +1,17 @@
+import os
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'OAUTH_token.json'
+
+import google.auth
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+
+# First, authenticate and authorize the API client
+creds, _ = google.auth.default(scopes=['https://www.googleapis.com/auth/drive.readonly',
+                                        'https://www.googleapis.com/auth/documents.readonly'])
+service = build('docs', 'v1', credentials=creds)
+
+# Then, get the document ID of the Google Doc you want to extract
+document_id = '1EwPGnwSdTj1O5IWKapqWfZ4kH228EbUptEpAQ8NC3ow'
+
+
+document = service.documents().get(documentId=document_id).execute()
